@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import './style.css';
-import { HiMiniXCircle } from 'react-icons/hi2';
+import { Popover } from '@headlessui/react';
+import { HiMiniXCircle, HiMiniPencil } from 'react-icons/hi2';
 import api from '../../services/api';
 
 function Home() {
   const [users, setUsers] = useState([])
-
+  const [editingUser, setEditingUser] = useState(null)
   const inputName = useRef();
   const inputEmail = useRef();
   const inputAge = useRef();
@@ -25,6 +26,12 @@ function Home() {
     inputName.current.value = ''
     inputEmail.current.value = ''
     inputAge.current.value = ''
+  }
+
+  async function updateUsers(id, updateData) {
+      await api.put(`/usuarios/${id}`, updateData)
+      getUsers()
+      setEditingUser(null)
   }
 
   async function deleteUsers(id) {
@@ -53,9 +60,25 @@ function Home() {
             <p>Email: {user.email}</p>
             <p>Idade: {user.age}</p>
           </div>
-          <button>
-            <HiMiniXCircle onClick={() => deleteUsers(user.id)}/>
-          </button>
+          <Popover className='relative'>
+            <div className='card-buttons'>
+              <button>
+                <HiMiniXCircle onClick={() => deleteUsers(user.id)}/>
+              </button>
+              <Popover.Button>
+                <HiMiniPencil onClick={() => setEditingUser(user)}/>
+              </Popover.Button>
+
+              <Popover.Panel className="popover-panel">
+                <h2>Editar Usuário</h2>
+                <input type="text" value={editingUser?.name} onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}/>
+                <input type="email" value={editingUser?.email} onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}/>
+                <input type="number" value={editingUser?.age} onChange={(e) => setEditingUser({ ...editingUser, age: e.target.value })}/>
+                <Popover.Button onClick={() => updateUsers(editingUser.id, editingUser)}>Salvar</Popover.Button>
+                <Popover.Button onClick={() => setEditingUser(null)}>Cancelar</Popover.Button>
+              </Popover.Panel>
+            </div>
+          </Popover>
         </div>
       ))}
     </div>
