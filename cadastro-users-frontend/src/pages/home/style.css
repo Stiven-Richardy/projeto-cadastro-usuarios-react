@@ -151,3 +151,34 @@ form {
   }
 }
 
+.password-visible {
+  position: relative;
+  width: 100%;
+  display: flex;
+
+  & input {
+    width: 88%;
+    top: 60%;
+    transform: translateY(-5%);
+    justify-content: left;
+  }
+
+  & button {
+    position: absolute;
+    height: 100%;
+    font-size: 20px;
+    right: 0px;
+    top: 25%;
+    transform: translateY(-30%);
+    width: 10%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & button:hover {
+    background-color: #8B8AE1;
+    color: white;
+  }
+}
